@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 const pool = mysql2.createPool({
-  host: process.env.HOSTNAME,
+  host: process.env.HOST,
   user: process.env.USER,
   password: process.env.PASSWORD,
   database: process.env.DATABASE
@@ -31,20 +31,20 @@ const deleteProduct = async (Product_Code) => {
 
 console.log(await deleteProduct('baro1'));
 
-const insertProduct = async (Product_Code, Product_Name, Product_Price, Product_Quantity) => {
-    const [data] = await pool.query('INSERT INTO products (Product_Code, Product_Name, Product_Price, Product_Quantity) values(?,?,?,?)', 
-        [Product_Code, Product_Name, Product_Price, Product_Quantity]);
-    return data;
-};
+// const insertProduct = async (Product_Code, Product_Name, Product_Price, Product_Quantity) => {
+//     const [data] = await pool.query('INSERT INTO products (Product_Code, Product_Name, Product_Price, Product_Quantity) values(?,?,?,?)', 
+//         [Product_Code, Product_Name, Product_Price, Product_Quantity]);
+//     return data;
+// };
 
-console.log(await insertProduct('ktkt1','KitKat',10.99,4));
+// console.log(await insertProduct('ktkt1','KitKat',10.99,4));
 
-const updateExistingProduct = async (Product_Code, Product_Name, Product_Price, Product_Quantity) => {
+const updateExistingProduct = async ( Product_Name, Product_Price, Product_Quantity, Product_Code) => {
     let [data] = await pool.query(
-        'UPDATE products SET Product_Name = ?, Product_Price = ?, Product_Quantity = ? WHERE Product_Code = ?',
-        [Product_Code, Product_Name, Product_Price, Product_Quantity]
+        'UPDATE products SET Product_Name = ?, Product_Price = ?, Product_Quantity = ? WHERE (Product_Code = ?)',
+        [ Product_Name, Product_Price, Product_Quantity, Product_Code]
     );
-    return data;
+    return await getProducts();
 };
 
-updateExistingProduct('usnw1','USN Whey',459.99,2);
+updateExistingProduct('USN Whey',459.99,2,'usnw1');
